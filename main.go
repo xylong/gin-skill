@@ -4,8 +4,8 @@ import (
 	"gin-skill/middlewares"
 	user2 "gin-skill/models/user"
 	"gin-skill/pkg/response"
+	"gin-skill/service"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 func main() {
@@ -19,9 +19,7 @@ func main() {
 		user := user2.NewUser()
 		response.Result(context.ShouldBind(user)).Unwrap()
 
-		context.JSON(http.StatusOK, gin.H{
-			"user": user,
-		})
+		response.OK(context)("", 0, response.Result(service.GetUserInfo(user.ID)).Unwrap())
 	})
 
 	_ = router.Run("0.0.0.0:9000")

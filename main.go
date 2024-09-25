@@ -1,6 +1,7 @@
 package main
 
 import (
+	"gin-skill/controllers"
 	"gin-skill/middlewares"
 	user2 "gin-skill/models/user"
 	"gin-skill/pkg/response"
@@ -11,6 +12,8 @@ import (
 func main() {
 	router := gin.New()
 	router.Use(middlewares.RequestHandle())
+	
+	router.GET("/user", middlewares.Wrapper(controllers.GetUser))
 
 	router.POST("/users", func(context *gin.Context) {
 		//user := user2.NewUser(user2.WithName("tom")).

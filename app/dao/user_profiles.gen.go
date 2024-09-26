@@ -6,6 +6,7 @@ package dao
 
 import (
 	"context"
+	"gin-skill/app/models"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -15,8 +16,6 @@ import (
 	"gorm.io/gen/field"
 
 	"gorm.io/plugin/dbresolver"
-
-	"gin-skill/models"
 )
 
 func newUserProfile(db *gorm.DB, opts ...gen.DOOption) userProfile {

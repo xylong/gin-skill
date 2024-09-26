@@ -1,10 +1,10 @@
-package service
+package services
 
 import (
 	"fmt"
-	"gin-skill/dao"
+	"gin-skill/app/dao"
+	"gin-skill/app/models"
 	"gin-skill/dto"
-	"gin-skill/models"
 	"github.com/jinzhu/copier"
 	"time"
 )

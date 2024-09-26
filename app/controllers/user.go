@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"fmt"
+	"gin-skill/app/services"
 	"gin-skill/dto"
-	"gin-skill/service"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cast"
 )
@@ -18,5 +18,5 @@ func GetUser(ctx *gin.Context) (any, error) {
 		return nil, fmt.Errorf("参数错误")
 	}
 
-	return service.GetSimpleUser(cast.ToInt64(req.Id))
+	return services.GetSimpleUser(cast.ToInt64(req.Id))
 }

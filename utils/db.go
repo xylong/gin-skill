@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"gin-skill/global"
 	"gorm.io/driver/mysql"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
@@ -19,8 +20,8 @@ var (
 
 func Migrate() {
 	g := gen.NewGenerator(gen.Config{
-		OutPath:      "./dao",
-		ModelPkgPath: "./models",
+		OutPath:      "./app/dao",
+		ModelPkgPath: "./app/models",
 
 		// WithDefaultQuery 生成默认查询结构体(作为全局变量使用), 即`Q`结构体和其字段(各表模型)
 		// WithoutContext 生成没有context调用限制的代码供查询
@@ -92,7 +93,17 @@ func Migrate() {
 // DB 获取db
 func DB() *gorm.DB {
 	once.Do(func() {
-		connectDb("root:123456@(127.0.0.1:3306)/test?charset=utf8mb4&parseTime=True&loc=Local")
+		dbConfig := global.App.Config.Database
+
+		dsn := fmt.Sprintf("%s:%s@(%s:%d)/%s?charset=%s&parseTime=True&loc=Local",
+			dbConfig.UserName,
+			dbConfig.Password,
+			dbConfig.Host,
+			dbConfig.Port,
+			dbConfig.Database,
+			dbConfig.Charset,
+		)
+		connectDb(dsn)
 	})
 
 	return db
@@ -111,8 +122,8 @@ func connectDb(dsn string) *gorm.DB {
 	}
 
 	mysqlDB, _ := db.DB()
-	mysqlDB.SetMaxIdleConns(5)
-	mysqlDB.SetMaxOpenConns(10)
+	mysqlDB.SetMaxIdleConns(global.App.Config.Database.MaxIdleConns)
+	mysqlDB.SetMaxOpenConns(global.App.Config.Database.MaxOpenConns)
 	mysqlDB.SetConnMaxLifetime(time.Second * 10)
 	mysqlDB.SetConnMaxIdleTime(time.Second * 30)
 

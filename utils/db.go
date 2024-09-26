@@ -6,10 +6,18 @@ import (
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"strings"
+	"sync"
+	"time"
 )
 
-func LoadDB() {
+var (
+	once sync.Once
+	db   *gorm.DB
+)
+
+func Migrate() {
 	g := gen.NewGenerator(gen.Config{
 		OutPath:      "./dao",
 		ModelPkgPath: "./models",
@@ -34,7 +42,7 @@ func LoadDB() {
 		FieldWithTypeTag: true,
 	})
 
-	g.UseDB(connectDb("root:123456@(127.0.0.1:3306)/test?charset=utf8mb4&parseTime=True&loc=Local"))
+	g.UseDB(DB())
 
 	// 自定义字段的数据类型
 	// 统一数字类型为int64,兼容protobuf和thrift
@@ -44,8 +52,8 @@ func LoadDB() {
 		"mediumint": func(columnType gorm.ColumnType) (dataType string) { return "int64" },
 		"bigint":    func(columnType gorm.ColumnType) (dataType string) { return "int64" },
 		"int":       func(columnType gorm.ColumnType) (dataType string) { return "int64" },
-		"timestamp": func(detailType gorm.ColumnType) (dataType string) { return "int64" },           // 自定义时间
-		"decimal":   func(detailType gorm.ColumnType) (dataType string) { return "decimal.Decimal" }, // 金额类型全部转换为第三方库,github.com/shopspring/decimal
+		//"timestamp": func(detailType gorm.ColumnType) (dataType string) { return "int64" },           // 自定义时间
+		"decimal": func(detailType gorm.ColumnType) (dataType string) { return "decimal.Decimal" }, // 金额类型全部转换为第三方库,github.com/shopspring/decimal
 	}
 
 	// 要先于`ApplyBasic`执行
@@ -81,11 +89,32 @@ func LoadDB() {
 	g.Execute()
 }
 
+// DB 获取db
+func DB() *gorm.DB {
+	once.Do(func() {
+		connectDb("root:123456@(127.0.0.1:3306)/test?charset=utf8mb4&parseTime=True&loc=Local")
+	})
+
+	return db
+}
+
 func connectDb(dsn string) *gorm.DB {
-	db, err := gorm.Open(mysql.Open(dsn))
+	var (
+		err error
+	)
+
+	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
 	if err != nil {
 		panic(fmt.Errorf("cannot establish db connection: %w", err))
 	}
+
+	mysqlDB, _ := db.DB()
+	mysqlDB.SetMaxIdleConns(5)
+	mysqlDB.SetMaxOpenConns(10)
+	mysqlDB.SetConnMaxLifetime(time.Second * 10)
+	mysqlDB.SetConnMaxIdleTime(time.Second * 30)
 
 	return db
 }

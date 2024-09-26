@@ -29,9 +29,6 @@ func newAddress(db *gorm.DB, opts ...gen.DOOption) address {
 	_address.ALL = field.NewAsterisk(tableName)
 	_address.ID = field.NewInt64(tableName, "id")
 	_address.UserID = field.NewInt64(tableName, "user_id")
-	_address.CreatedAt = field.NewTime(tableName, "created_at")
-	_address.UpdatedAt = field.NewTime(tableName, "updated_at")
-	_address.DeletedAt = field.NewField(tableName, "deleted_at")
 	_address.Name = field.NewString(tableName, "name")
 	_address.Longitude = field.NewField(tableName, "longitude")
 	_address.Latitude = field.NewField(tableName, "latitude")
@@ -39,6 +36,9 @@ func newAddress(db *gorm.DB, opts ...gen.DOOption) address {
 	_address.Province = field.NewString(tableName, "province")
 	_address.City = field.NewString(tableName, "city")
 	_address.District = field.NewString(tableName, "district")
+	_address.CreatedAt = field.NewTime(tableName, "created_at")
+	_address.UpdatedAt = field.NewTime(tableName, "updated_at")
+	_address.DeletedAt = field.NewField(tableName, "deleted_at")
 	_address.User = addressBelongsToUser{
 		db: db.Session(&gorm.Session{}),
 
@@ -66,9 +66,6 @@ type address struct {
 	ALL       field.Asterisk
 	ID        field.Int64
 	UserID    field.Int64  // 用户id
-	CreatedAt field.Time   // 创建时间
-	UpdatedAt field.Time   // 更新时间
-	DeletedAt field.Field  // 删除时间
 	Name      field.String // 名称
 	Longitude field.Field  // 经度
 	Latitude  field.Field  // 纬度
@@ -76,6 +73,9 @@ type address struct {
 	Province  field.String // 省
 	City      field.String // 市
 	District  field.String // 区
+	CreatedAt field.Time   // 创建时间
+	UpdatedAt field.Time   // 更新时间
+	DeletedAt field.Field  // 删除时间
 	User      addressBelongsToUser
 
 	fieldMap map[string]field.Expr
@@ -95,9 +95,6 @@ func (a *address) updateTableName(table string) *address {
 	a.ALL = field.NewAsterisk(table)
 	a.ID = field.NewInt64(table, "id")
 	a.UserID = field.NewInt64(table, "user_id")
-	a.CreatedAt = field.NewTime(table, "created_at")
-	a.UpdatedAt = field.NewTime(table, "updated_at")
-	a.DeletedAt = field.NewField(table, "deleted_at")
 	a.Name = field.NewString(table, "name")
 	a.Longitude = field.NewField(table, "longitude")
 	a.Latitude = field.NewField(table, "latitude")
@@ -105,6 +102,9 @@ func (a *address) updateTableName(table string) *address {
 	a.Province = field.NewString(table, "province")
 	a.City = field.NewString(table, "city")
 	a.District = field.NewString(table, "district")
+	a.CreatedAt = field.NewTime(table, "created_at")
+	a.UpdatedAt = field.NewTime(table, "updated_at")
+	a.DeletedAt = field.NewField(table, "deleted_at")
 
 	a.fillFieldMap()
 
@@ -124,9 +124,6 @@ func (a *address) fillFieldMap() {
 	a.fieldMap = make(map[string]field.Expr, 13)
 	a.fieldMap["id"] = a.ID
 	a.fieldMap["user_id"] = a.UserID
-	a.fieldMap["created_at"] = a.CreatedAt
-	a.fieldMap["updated_at"] = a.UpdatedAt
-	a.fieldMap["deleted_at"] = a.DeletedAt
 	a.fieldMap["name"] = a.Name
 	a.fieldMap["longitude"] = a.Longitude
 	a.fieldMap["latitude"] = a.Latitude
@@ -134,6 +131,9 @@ func (a *address) fillFieldMap() {
 	a.fieldMap["province"] = a.Province
 	a.fieldMap["city"] = a.City
 	a.fieldMap["district"] = a.District
+	a.fieldMap["created_at"] = a.CreatedAt
+	a.fieldMap["updated_at"] = a.UpdatedAt
+	a.fieldMap["deleted_at"] = a.DeletedAt
 
 }
 

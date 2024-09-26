@@ -1,12 +1,14 @@
 package main
 
 import (
+	"gin-skill/dao"
 	"gin-skill/routers"
 	"gin-skill/utils"
 )
 
 func main() {
-	utils.LoadDB()
+	utils.Migrate()
+	dao.SetDefault(utils.DB())
 
 	router := routers.InitRouter()
 

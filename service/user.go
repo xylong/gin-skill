@@ -1,14 +1,10 @@
 package service
 
 import (
-	"fmt"
-	"github.com/gin-gonic/gin"
+	"gin-skill/dao"
 )
 
-func GetUserInfo(id int64) (gin.H, error) {
-	if id > 10 {
-		return gin.H{"msg": "ok"}, nil
-	}
-
-	return nil, fmt.Errorf("test error")
+func GetUserById(id int64) (any, error) {
+	u := dao.User
+	return u.Where(u.ID.Eq(id)).Preload(dao.User.Profile).First()
 }

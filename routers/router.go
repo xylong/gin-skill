@@ -9,7 +9,7 @@ import (
 // InitRouter 初始化路由
 func InitRouter() *gin.Engine {
 	router := gin.New()
-	router.Use(middlewares.RequestHandle())
+	router.Use(middlewares.ErrorHandle())
 
 	// 注册
 	router.POST("/register", middlewares.Wrapper(controllers.Register))

@@ -1,7 +1,9 @@
 package middlewares
 
 import (
+	"gin-skill/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 	"net/http"
 )
 
@@ -35,6 +37,13 @@ func Wrapper(handlerFunc ExceptionHandlerFunc) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		data, err := handlerFunc(context)
 		if err != nil {
+			if e, ok := err.(validator.ValidationErrors); ok {
+				for _, fieldError := range e {
+					context.JSON(http.StatusBadRequest, responseError(fieldError.Translate(utils.Trans)))
+					return
+				}
+			}
+
 			context.JSON(http.StatusOK, responseError(err.Error()))
 			return
 		}

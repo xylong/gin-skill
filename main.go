@@ -11,8 +11,9 @@ import (
 
 func main() {
 	bootstrap.InitConfig()
+	global.App.Log = bootstrap.InitLog()
 
-	utils.Migrate()
+	//utils.Migrate()
 	dao.SetDefault(utils.DB())
 
 	router := routes.InitRouter()

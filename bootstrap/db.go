@@ -137,6 +137,14 @@ func connectDb(dsn string) *gorm.DB {
 	return db
 }
 
+// CloseDB 关闭数据库连接
+func CloseDB() {
+	if db != nil {
+		mysqlDB, _ := db.DB()
+		mysqlDB.Close()
+	}
+}
+
 func generateModel(generator *gen.Generator, fieldOpts []gen.ModelOpt) {
 	Address := generator.GenerateModel("address")
 	Profile := generator.GenerateModel("user_profiles")

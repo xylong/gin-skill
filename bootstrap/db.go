@@ -1,13 +1,17 @@
-package utils
+package bootstrap
 
 import (
 	"fmt"
 	"gin-skill/global"
+	"gopkg.in/natefinch/lumberjack.v2"
 	"gorm.io/driver/mysql"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"io"
+	"log"
+	"os"
 	"strings"
 	"sync"
 	"time"
@@ -103,6 +107,7 @@ func DB() *gorm.DB {
 			dbConfig.Database,
 			dbConfig.Charset,
 		)
+
 		connectDb(dsn)
 	})
 
@@ -115,7 +120,9 @@ func connectDb(dsn string) *gorm.DB {
 	)
 
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
+		DisableForeignKeyConstraintWhenMigrating: true, // 禁用自动创建外键约束
+		//Logger:                                   logger.Default.LogMode(logger.Info),
+		Logger: getGormLogger(),
 	})
 	if err != nil {
 		panic(fmt.Errorf("cannot establish db connection: %w", err))
@@ -161,4 +168,50 @@ func generateModel(generator *gen.Generator, fieldOpts []gen.ModelOpt) {
 	)
 
 	generator.ApplyBasic(User, Address)
+}
+
+// 自定义 gorm Writer
+func getGormLogWriter() logger.Writer {
+	var writer io.Writer
+
+	// 是否启用日志文件
+	if global.App.Config.Database.EnableFileLogWriter {
+		// 自定义 Writer
+		writer = &lumberjack.Logger{
+			Filename:   global.App.Config.Log.Dir + "/" + global.App.Config.Database.LogFilename,
+			MaxSize:    global.App.Config.Log.MaxSize,
+			MaxBackups: global.App.Config.Log.MaxBackups,
+			MaxAge:     global.App.Config.Log.MaxAge,
+			Compress:   global.App.Config.Log.Compress,
+		}
+	} else {
+		// 默认 Writer
+		writer = os.Stdout
+	}
+
+	return log.New(writer, "\r\n", log.LstdFlags)
+}
+
+func getGormLogger() logger.Interface {
+	var logMode logger.LogLevel
+
+	switch global.App.Config.Database.LogMode {
+	case "silent":
+		logMode = logger.Silent
+	case "error":
+		logMode = logger.Error
+	case "warn":
+		logMode = logger.Warn
+	case "info":
+		logMode = logger.Info
+	default:
+		logMode = logger.Info
+	}
+
+	return logger.New(getGormLogWriter(), logger.Config{
+		SlowThreshold:             200 * time.Millisecond,                          // 慢 SQL 阈值
+		LogLevel:                  logMode,                                         // 日志级别
+		IgnoreRecordNotFoundError: false,                                           // 忽略ErrRecordNotFound（记录未找到）错误
+		Colorful:                  !global.App.Config.Database.EnableFileLogWriter, // 禁用彩色打印
+	})
 }

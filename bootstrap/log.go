@@ -11,7 +11,6 @@ import (
 )
 
 var (
-	logger  *zap.Logger
 	level   zapcore.Level // zap 日志等级
 	options []zap.Option  // zap 配置项
 )
@@ -28,7 +27,7 @@ func InitLog() *zap.Logger {
 	}
 
 	// 初始化 zap
-	logger = zap.New(getZapCore(), options...)
+	logger := zap.New(getZapCore(), options...)
 	// 替换zap包中全局的logger实例，后续在其他包中只需使用zap.L()调用即可
 	zap.ReplaceGlobals(logger)
 

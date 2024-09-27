@@ -11,10 +11,10 @@ import (
 
 func main() {
 	bootstrap.InitConfig()
-	global.App.Log = bootstrap.InitLog()
+	bootstrap.InitLog()
 
-	//utils.Migrate()
-	dao.SetDefault(utils.DB())
+	bootstrap.Migrate()
+	dao.SetDefault(bootstrap.DB())
 
 	router := routes.InitRouter()
 

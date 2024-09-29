@@ -18,7 +18,7 @@ var (
 )
 
 // Register 注册
-func (s *authService) Register(req request.request) (error, *models.User) {
+func (s *authService) Register(req request.RegisterReq) (error, *models.User) {
 	var (
 		err  error
 		u    = dao.User

@@ -3,7 +3,7 @@ package bootstrap
 import (
 	"context"
 	"errors"
-	middlewares2 "gin-skill/app/http/middlewares"
+	"gin-skill/app/http/middlewares"
 	"gin-skill/global"
 	"gin-skill/routes"
 	"github.com/gin-gonic/gin"
@@ -16,27 +16,37 @@ import (
 	"time"
 )
 
-func setupRouter() *gin.Engine {
+// SetupRoute 路由初始化
+func SetupRoute() *gin.Engine {
 	if global.App.Config.App.Env == "production" {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
 	router := gin.New()
-	router.Use(gin.Logger(), middlewares2.CustomRecovery(), middlewares2.Cors())
 
-	// 注册 api 分组路由
-	apiGroup := router.Group("/api")
-	routes.SetApiGroupRoutes(apiGroup)
+	// 注册全局中间件
+	registerGlobalMiddleWare(router)
+
+	//  注册 API 路由
+	routes.RegisterAPIRoutes(router.Group("/api"))
+
+	//  配置 404 路由
+	setup404Handler(router)
 
 	return router
 }
 
-// RunServer 启动服务器
-func RunServer() {
-	r := setupRouter()
+func registerGlobalMiddleWare(router *gin.Engine) {
+	router.Use(
+		gin.Logger(),
+		middlewares.CustomRecovery(),
+		middlewares.Cors(),
+	)
+}
 
+func setup404Handler(router *gin.Engine) {
 	// 处理 404 请求
-	r.NoRoute(func(c *gin.Context) {
+	router.NoRoute(func(c *gin.Context) {
 		// 获取标头信息的 Accept 信息
 		acceptString := c.Request.Header.Get("Accept")
 		if strings.Contains(acceptString, "text/html") {
@@ -50,6 +60,11 @@ func RunServer() {
 			})
 		}
 	})
+}
+
+// RunServer 启动服务器
+func RunServer() {
+	r := SetupRoute()
 
 	srv := &http.Server{
 		Addr:    ":" + global.App.Config.App.Port,

@@ -7,19 +7,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// SetApiGroupRoutes 定义 api 分组路由
-func SetApiGroupRoutes(router *gin.RouterGroup) {
-	// 注册
-	router.POST("/register", controllers2.Register)
-	// 登录
-	router.POST("/login", controllers2.Login)
+// RegisterAPIRoutes 注册api路由
+func RegisterAPIRoutes(router *gin.RouterGroup) {
 
-	authRouter := router.Group("").Use(middlewares.JWTAuth(services.AppGuardName))
+	v1 := router.Group("/v1")
 	{
-		// 登出
-		authRouter.POST("/logout", controllers2.Logout)
+		// 注册
+		v1.POST("/register", controllers2.Register)
+		// 登录
+		v1.POST("/login", controllers2.Login)
 
-		// 个人信息
-		authRouter.GET("/me", controllers2.Me)
+		authRouter := v1.Group("").Use(middlewares.JWTAuth(services.AppGuardName))
+		{
+			// 登出
+			authRouter.POST("/logout", controllers2.Logout)
+
+			// 个人信息
+			authRouter.GET("/me", controllers2.Me)
+		}
 	}
 }

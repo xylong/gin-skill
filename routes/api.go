@@ -2,6 +2,8 @@ package routes
 
 import (
 	"gin-skill/app/controllers"
+	"gin-skill/app/middlewares"
+	"gin-skill/app/services"
 	"github.com/gin-gonic/gin"
 )
 
@@ -11,4 +13,10 @@ func SetApiGroupRoutes(router *gin.RouterGroup) {
 	router.POST("/register", controllers.Register)
 	// 登录
 	router.POST("/login", controllers.Login)
+
+	authRouter := router.Group("").Use(middlewares.JWTAuth(services.AppGuardName))
+	{
+		// 个人信息
+		authRouter.GET("/me", controllers.Me)
+	}
 }

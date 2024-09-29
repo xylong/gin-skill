@@ -6,14 +6,18 @@ import (
 	"gin-skill/app/models"
 	"gin-skill/dto"
 	"github.com/jinzhu/copier"
+	"github.com/spf13/cast"
 	"time"
 )
 
-const (
-	UserNotFound = 10001
+type userService struct{}
+
+var (
+	UserService = new(userService)
 )
 
-func GetSimpleUser(id int64) (any, error) {
+// Me 获取个人信息
+func (s *userService) Me(id string) (error, *dto.SimpleUser) {
 	var (
 		err        error
 		user       *models.User
@@ -21,8 +25,8 @@ func GetSimpleUser(id int64) (any, error) {
 	)
 
 	u := dao.User
-	if user, err = u.Where(u.ID.Eq(id)).Preload(dao.User.Profile).First(); err != nil {
-		return nil, fmt.Errorf("用户不存在")
+	if user, err = u.Where(u.ID.Eq(cast.ToInt64(id))).Preload(dao.User.Profile).First(); err != nil {
+		return fmt.Errorf("用户不存在"), nil
 	}
 
 	_ = copier.Copy(&simpleUser, &user)
@@ -30,5 +34,5 @@ func GetSimpleUser(id int64) (any, error) {
 	simpleUser.Signature = user.Profile.Signature
 	simpleUser.CreatedAt = user.CreatedAt.Format(time.DateTime)
 
-	return &simpleUser, nil
+	return nil, &simpleUser
 }

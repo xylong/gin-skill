@@ -1,22 +1,17 @@
 package controllers
 
 import (
-	"fmt"
+	"gin-skill/app/common/response"
 	"gin-skill/app/services"
-	"gin-skill/dto"
 	"github.com/gin-gonic/gin"
-	"github.com/spf13/cast"
 )
 
-// GetUser 用户信息
-func GetUser(ctx *gin.Context) (any, error) {
-	var (
-		req dto.UserInfoReq
-	)
-
-	if err := ctx.ShouldBindUri(&req); err != nil {
-		return nil, fmt.Errorf("参数错误")
+func Me(ctx *gin.Context) {
+	err, user := services.UserService.Me(ctx.Keys["id"].(string))
+	if err != nil {
+		response.BusinessFail(ctx, err.Error())
+		return
 	}
 
-	return services.GetSimpleUser(cast.ToInt64(req.Id))
+	response.Success(ctx, user)
 }

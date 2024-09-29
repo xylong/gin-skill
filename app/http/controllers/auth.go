@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"gin-skill/app/common/request"
 	"gin-skill/app/common/response"
 	"gin-skill/app/models"
+	"gin-skill/app/requests"
 	"gin-skill/app/services"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"

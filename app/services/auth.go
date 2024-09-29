@@ -2,9 +2,9 @@ package services
 
 import (
 	"fmt"
-	"gin-skill/app/common/request"
 	"gin-skill/app/dao"
 	"gin-skill/app/models"
+	"gin-skill/app/requests"
 	"gin-skill/utils"
 	"go.uber.org/zap"
 )
@@ -18,7 +18,7 @@ var (
 )
 
 // Register 注册
-func (s *authService) Register(req request.RegisterReq) (error, *models.User) {
+func (s *authService) Register(req request.request) (error, *models.User) {
 	var (
 		err  error
 		u    = dao.User

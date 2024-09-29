@@ -3,7 +3,7 @@ package bootstrap
 import (
 	"context"
 	"errors"
-	"gin-skill/app/middlewares"
+	middlewares2 "gin-skill/app/http/middlewares"
 	"gin-skill/global"
 	"gin-skill/routes"
 	"github.com/gin-gonic/gin"
@@ -21,7 +21,7 @@ func setupRouter() *gin.Engine {
 	}
 
 	router := gin.New()
-	router.Use(gin.Logger(), middlewares.CustomRecovery(), middlewares.Cors())
+	router.Use(gin.Logger(), middlewares2.CustomRecovery(), middlewares2.Cors())
 
 	// 注册 api 分组路由
 	apiGroup := router.Group("/api")

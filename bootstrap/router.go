@@ -3,6 +3,7 @@ package bootstrap
 import (
 	"context"
 	"errors"
+	"gin-skill/app/middlewares"
 	"gin-skill/global"
 	"gin-skill/routes"
 	"github.com/gin-gonic/gin"
@@ -15,7 +16,12 @@ import (
 )
 
 func setupRouter() *gin.Engine {
-	router := gin.Default()
+	if global.App.Config.App.Env == "production" {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
+	router := gin.New()
+	router.Use(gin.Logger(), middlewares.CustomRecovery(), middlewares.Cors())
 
 	// 注册 api 分组路由
 	apiGroup := router.Group("/api")

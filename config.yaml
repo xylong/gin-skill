@@ -39,4 +39,4 @@ jwt:
   secret: 3Bde3BGEbYqtqyEUzW3ry8jKFcaPH17fRmTmqE7MDr05Lwj95uruRKrrkb44TJ4s
   expire: 3600
   jwt_blacklist_grace_period: 10
-  refresh_grace_period: 3600
+  refresh_grace_period: 1800

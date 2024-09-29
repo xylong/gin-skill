@@ -13,5 +13,7 @@ func main() {
 	dao.SetDefault(bootstrap.DB())
 	defer bootstrap.CloseDB()
 
+	bootstrap.InitValidator()
+
 	bootstrap.RunServer()
 }

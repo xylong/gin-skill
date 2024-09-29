@@ -6,6 +6,9 @@ import (
 	"gin-skill/global"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
+	"go.uber.org/zap"
+	"strconv"
+	"time"
 )
 
 func JWTAuth(GuardName string) gin.HandlerFunc {
@@ -39,6 +42,23 @@ func JWTAuth(GuardName string) gin.HandlerFunc {
 			response.TokenFail(context)
 			context.Abort()
 			return
+		}
+
+		// token 续签
+		if claims.ExpiresAt-time.Now().Unix() < global.App.Config.Jwt.RefreshGracePeriod {
+			lock := global.Lock("refresh_token_lock", global.App.Config.Jwt.JwtBlacklistGracePeriod)
+			if lock.Get() {
+				err, user := services.JwtService.GetUserInfo(GuardName, claims.Id)
+				if err != nil {
+					zap.L().Error(err.Error())
+					lock.Release()
+				} else {
+					tokenData, _, _ := services.JwtService.CreateToken(GuardName, user)
+					context.Header("new-token", tokenData.AccessToken)
+					context.Header("new-expires-in", strconv.Itoa(tokenData.ExpiresIn))
+					_ = services.JwtService.JoinBlackList(token)
+				}
+			}
 		}
 
 		context.Set("token", token)

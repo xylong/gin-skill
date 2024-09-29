@@ -6,6 +6,7 @@ import (
 	"gin-skill/app/models"
 	"gin-skill/app/services"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt"
 )
 
 // Register 注册
@@ -49,4 +50,14 @@ func Login(ctx *gin.Context) {
 		}
 		response.Success(ctx, tokenData)
 	}
+}
+
+// Logout 登出
+func Logout(ctx *gin.Context) {
+	err := services.JwtService.JoinBlackList(ctx.Keys["token"].(*jwt.Token))
+	if err != nil {
+		response.BusinessFail(ctx, "登出失败")
+		return
+	}
+	response.Success(ctx, nil)
 }

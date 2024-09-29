@@ -3,6 +3,7 @@ package main
 import (
 	"gin-skill/app/dao"
 	"gin-skill/bootstrap"
+	"gin-skill/global"
 )
 
 func main() {
@@ -14,6 +15,7 @@ func main() {
 	defer bootstrap.CloseDB()
 
 	bootstrap.InitValidator()
+	global.App.Redis = bootstrap.InitRedis()
 
 	bootstrap.RunServer()
 }

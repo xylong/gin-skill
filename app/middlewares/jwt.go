@@ -27,6 +27,11 @@ func JWTAuth(GuardName string) gin.HandlerFunc {
 			context.Abort()
 			return
 		}
+		if err != nil || services.JwtService.IsInBlacklist(tokenStr) {
+			response.TokenFail(context)
+			context.Abort()
+			return
+		}
 
 		claims := token.Claims.(*services.CustomClaims)
 		// Token 发布者校验

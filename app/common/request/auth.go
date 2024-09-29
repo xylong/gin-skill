@@ -21,6 +21,16 @@ func (register RegisterReq) GetMessages() ValidatorMessages {
 
 // LoginReq 登录
 type LoginReq struct {
-	Phone    string `form:"user" json:"user" binding:"required"`
-	Password string `form:"password" json:"password" binding:"required"`
+	Phone    string `form:"phone" json:"phone" binding:"required"`
+	Password string `form:"password" json:"password" binding:"required,min=6,max=20"`
+}
+
+func (login LoginReq) GetMessages() ValidatorMessages {
+	return ValidatorMessages{
+		"phone.required":    "手机号码不能为空",
+		"phone.mobile":      "手机号码格式不正确",
+		"password.required": "用户密码不能为空",
+		"password.min":      "用户密码最小6位",
+		"password.max":      "用户密码最大20位",
+	}
 }

@@ -9,4 +9,6 @@ import (
 func SetApiGroupRoutes(router *gin.RouterGroup) {
 	// 注册
 	router.POST("/register", controllers.Register)
+	// 登录
+	router.POST("/login", controllers.Login)
 }

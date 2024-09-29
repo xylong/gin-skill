@@ -18,7 +18,7 @@ type UserProfile struct {
 	UserID    int64          `gorm:"column:user_id;type:int unsigned;not null;comment:用户id" json:"user_id"`          // 用户id
 	Gender    int64          `gorm:"column:gender;type:tinyint(1);not null;comment:性别：0保密 1 男 2女 3未知" json:"gender"` // 性别：0保密 1 男 2女 3未知
 	Level     int64          `gorm:"column:level;type:tinyint(1);not null;comment:等级" json:"level"`                  // 等级
-	Password  string         `gorm:"column:password;type:char(32);not null;comment:密码" json:"password"`              // 密码
+	Password  string         `gorm:"column:password;type:char(255);not null;comment:密码" json:"password"`             // 密码
 	Salt      string         `gorm:"column:salt;type:char(30);not null;comment:盐" json:"salt"`                       // 盐
 	Birthday  *time.Time     `gorm:"column:birthday;type:date;comment:出生日期" json:"birthday"`                         // 出生日期
 	Signature string         `gorm:"column:signature;type:varchar(255);not null;comment:个性签名" json:"signature"`      // 个性签名

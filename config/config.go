@@ -1,14 +1,15 @@
 package config
 
 type Configuration struct {
-	App      App      `json:"app" yaml:"app"`
-	Log      Log      `json:"log" yaml:"log"`
-	Database Database `json:"database" yaml:"database"`
+	App      App      `mapstructure:"app" json:"app" yaml:"app"`
+	Log      Log      `mapstructure:"log" json:"log" yaml:"log"`
+	Database Database `mapstructure:"database" json:"database" yaml:"database"`
+	Jwt      JWT      `mapstructure:"jwt" json:"jwt" yaml:"jwt"`
 }
 
 type App struct {
-	Env     string `json:"env" yaml:"env"`
-	Port    string `json:"port" yaml:"port"`
-	AppName string ` json:"app_name" yaml:"app_name"`
-	AppUrl  string `json:"app_url" yaml:"app_url"`
+	Env     string `mapstructure:"env" json:"env" yaml:"env"`
+	Port    string `mapstructure:"port" json:"port" yaml:"port"`
+	AppName string `mapstructure:"app_name" json:"app_name" yaml:"app_name"`
+	AppUrl  string `mapstructure:"app_url" json:"app_url" yaml:"app_url"`
 }

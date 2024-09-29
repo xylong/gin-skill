@@ -29,3 +29,6 @@ database:
   enable_file_log_writer: false # 是否启用日志文件
   log_filename: sql.log
 
+jwt:
+  secret: 3Bde3BGEbYqtqyEUzW3ry8jKFcaPH17fRmTmqE7MDr05Lwj95uruRKrrkb44TJ4s
+  expire: 3600

@@ -18,7 +18,7 @@ var (
 )
 
 // Register 注册
-func (userService *authService) Register(req request.RegisterReq) (error, *models.User) {
+func (s *authService) Register(req request.RegisterReq) (error, *models.User) {
 	var (
 		err  error
 		u    = dao.User
@@ -37,6 +37,22 @@ func (userService *authService) Register(req request.RegisterReq) (error, *model
 	if err = u.Create(user); err != nil {
 		zap.L().Error("register", zap.Error(err))
 		return fmt.Errorf("注册失败"), nil
+	}
+
+	return nil, user
+}
+
+// Login 登录
+func (s *authService) Login(req request.LoginReq) (error, *models.User) {
+	var (
+		err  error
+		u    = dao.User
+		user *models.User
+	)
+
+	user, err = u.Where(u.Phone.Eq(req.Phone)).Preload(u.Profile).First()
+	if err != nil || !utils.BcryptMakeCheck([]byte(req.Password), user.Profile.Password) {
+		return fmt.Errorf("用户不存在或密码错误"), nil
 	}
 
 	return nil, user

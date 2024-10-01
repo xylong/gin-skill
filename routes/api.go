@@ -1,7 +1,7 @@
 package routes
 
 import (
-	controllers2 "gin-skill/app/http/controllers"
+	v12 "gin-skill/app/http/controllers/api/v1"
 	"gin-skill/app/http/middlewares"
 	"gin-skill/app/services"
 	"github.com/gin-gonic/gin"
@@ -13,17 +13,17 @@ func RegisterAPIRoutes(router *gin.RouterGroup) {
 	v1 := router.Group("/v1")
 	{
 		// 注册
-		v1.POST("/register", controllers2.Register)
+		v1.POST("/register", v12.Auth.Register)
 		// 登录
-		v1.POST("/login", controllers2.Login)
+		v1.POST("/login", v12.Auth.Login)
 
 		authRouter := v1.Group("").Use(middlewares.JWTAuth(services.AppGuardName))
 		{
 			// 登出
-			authRouter.POST("/logout", controllers2.Logout)
+			authRouter.POST("/logout", v12.Auth.Logout)
 
 			// 个人信息
-			authRouter.GET("/me", controllers2.Me)
+			authRouter.GET("/me", v12.User.Me)
 		}
 	}
 }

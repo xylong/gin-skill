@@ -1,4 +1,4 @@
-package controllers
+package v1
 
 import (
 	"gin-skill/app/common/response"
@@ -9,8 +9,16 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
+var (
+	Auth = new(AuthController)
+)
+
+type AuthController struct {
+	BaseApiController
+}
+
 // Register 注册
-func Register(ctx *gin.Context) {
+func (c *AuthController) Register(ctx *gin.Context) {
 	var (
 		err error
 		req request.RegisterReq
@@ -28,7 +36,7 @@ func Register(ctx *gin.Context) {
 }
 
 // Login 登录
-func Login(ctx *gin.Context) {
+func (c *AuthController) Login(ctx *gin.Context) {
 	var (
 		err  error
 		req  request.LoginReq
@@ -53,7 +61,7 @@ func Login(ctx *gin.Context) {
 }
 
 // Logout 登出
-func Logout(ctx *gin.Context) {
+func (c *AuthController) Logout(ctx *gin.Context) {
 	err := services.JwtService.JoinBlackList(ctx.Keys["token"].(*jwt.Token))
 	if err != nil {
 		response.BusinessFail(ctx, "登出失败")

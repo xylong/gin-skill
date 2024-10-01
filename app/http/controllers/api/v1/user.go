@@ -1,4 +1,4 @@
-package controllers
+package v1
 
 import (
 	"gin-skill/app/common/response"
@@ -6,7 +6,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Me(ctx *gin.Context) {
+var (
+	User = new(UserController)
+)
+
+type UserController struct{}
+
+// Me 个人信息
+func (u *UserController) Me(ctx *gin.Context) {
 	err, user := services.UserService.Me(ctx.Keys["id"].(string))
 	if err != nil {
 		response.BusinessFail(ctx, err.Error())

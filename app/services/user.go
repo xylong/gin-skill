@@ -36,3 +36,15 @@ func (s *userService) Me(id string) (error, *dto.SimpleUser) {
 
 	return nil, &simpleUser
 }
+
+// IsEmailExist 判断 Email 已被注册
+func IsEmailExist(email string) bool {
+	user, _ := dao.User.Where(dao.User.Email.Eq(email)).Select(dao.User.ID).First()
+	return user != nil
+}
+
+// IsPhoneExist 判断手机号已被注册
+func IsPhoneExist(phone string) bool {
+	user, _ := dao.User.Where(dao.User.Phone.Eq(phone)).Select(dao.User.ID).First()
+	return user != nil
+}

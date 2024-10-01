@@ -14,7 +14,7 @@ type (
 )
 
 // GetErrorMsg 获取错误信息
-func GetErrorMsg(request interface{}, err error) string {
+func GetErrorMsg(request any, err error) string {
 	_, isValidator := request.(Validator)
 
 	if _, ok := err.(validator.ValidationErrors); ok && isValidator {

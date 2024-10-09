@@ -21,3 +21,6 @@
 ├── storage                       # 存储
 └── utils
 ```
+包
+- 大小写转换：https://github.com/iancoleman/strcase
+- 英文单复数：https://github.com/gertd/go-pluralize

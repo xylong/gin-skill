@@ -4,6 +4,7 @@ import (
 	v12 "gin-skill/app/http/controllers/api/v1"
 	"gin-skill/app/http/middlewares"
 	"gin-skill/app/services"
+	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 )
 
@@ -32,4 +33,6 @@ func RegisterAPIRoutes(router *gin.RouterGroup) {
 			authRouter.GET("/me", v12.User.Me)
 		}
 	}
+
+	pprof.Register(router)
 }
